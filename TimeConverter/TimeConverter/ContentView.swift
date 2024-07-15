@@ -77,7 +77,7 @@ struct ContentView: View {
           
         }
         Section("And here are the results!") {
-          Text("\(convertedTime)")
+          Text("\(convertedTime.formatted())")
           
         }
         
