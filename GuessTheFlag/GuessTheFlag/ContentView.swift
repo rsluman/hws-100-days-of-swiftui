@@ -9,19 +9,21 @@ import SwiftUI
 
 struct ContentView: View {
   var body: some View {
-    Button {
-      print("Button was tapped")
-    } label: {
-      Text("Press here...")
-        .padding()
-        .foregroundStyle(.white)
-        .background(.red)
-        .cornerRadius(10)
+    //    Button("Edit", systemImage: "circle.square") { }
+    
+    Button(action: executePlay) {
+      Label {
+        Text("Play") } icon: {
+          Image(systemName: "gamecontroller")
+            .font(.largeTitle)
+            .foregroundStyle(Gradient(colors: [.red, .yellow]))
+        }
     }
+
   }
   
-  func executeDelete() {
-    print("Now deleting...")
+  func executePlay() {
+    print("Now playing...")
   }
 }
 
