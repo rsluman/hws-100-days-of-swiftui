@@ -8,22 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
-  var body: some View {
-    //    Button("Edit", systemImage: "circle.square") { }
-    
-    Button(action: executePlay) {
-      Label {
-        Text("Play") } icon: {
-          Image(systemName: "gamecontroller")
-            .font(.largeTitle)
-        }
-    }
-    .foregroundStyle(Gradient(colors: [.red, .yellow]))
-
-  }
+  @State var shouldShowAlert = false
   
-  func executePlay() {
-    print("Now playing...")
+  var body: some View {
+    
+    Button("Press!") { shouldShowAlert = true }
+      .alert("Important Message", isPresented: $shouldShowAlert) {
+        Button("Destroy", role: .destructive) { }
+        Button("Cancel", role: .cancel) {}
+      }
   }
 }
 
