@@ -8,24 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
-  var body: some View {
-    ZStack {
+    var body: some View {
+//      LinearGradient(colors: [.white, .black], startPoint: .top, endPoint: .bottom)
 
-      VStack(spacing: 0) {
-        Color.red
-        Color.blue
-      }
+//      LinearGradient(stops: [
+//        .init(color: .white, location: 0.45),
+//        .init(color: .black, location: 0.55)
+//      ], startPoint: .top, endPoint: .bottom)
+
+      // vanaf het midden: blauwe cirkel met een straal van 20 punten
+      // dan een gradient cirkel van blauw naar zwart met een straal van 200 punten
+//      RadialGradient(colors: [.blue, .black],
+//                     center: .center, startRadius: 20, endRadius: 200)
       
-      Text("Your Content")
-        .foregroundStyle(.secondary)
-        .padding(50)
-        .background(.ultraThinMaterial)
-        .cornerRadius(15)
+//      AngularGradient(colors: [.red, .yellow, .green, .blue, .purple, .red], center: .center)
       
-    }.ignoresSafeArea()
-  }
+      // Standaard gradient, als modifier:
+        Text("Your content")
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.indigo.gradient)
+        
+        
+      
+    }
 }
 
 #Preview {
-  ContentView()
+    ContentView()
 }
