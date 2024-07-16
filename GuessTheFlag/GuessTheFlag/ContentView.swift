@@ -8,32 +8,39 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-//      LinearGradient(colors: [.white, .black], startPoint: .top, endPoint: .bottom)
+  var body: some View {
+    VStack(spacing: 20) {
+      Button("Button 1") { }
+        .buttonStyle(.bordered)
+      
+      Button("Button 2", role: .destructive) { }
+        .buttonStyle(.bordered)
 
-//      LinearGradient(stops: [
-//        .init(color: .white, location: 0.45),
-//        .init(color: .black, location: 0.55)
-//      ], startPoint: .top, endPoint: .bottom)
+      Button("Button 3") { }
+        .buttonStyle(.borderedProminent)
+      
+      Button("Button 4", role: .destructive) { }
+        .buttonStyle(.borderedProminent)
 
-      // vanaf het midden: blauwe cirkel met een straal van 20 punten
-      // dan een gradient cirkel van blauw naar zwart met een straal van 200 punten
-//      RadialGradient(colors: [.blue, .black],
-//                     center: .center, startRadius: 20, endRadius: 200)
+      Button("Button 5") { }
+        .buttonStyle(.bordered)
+        .tint(.indigo)
       
-//      AngularGradient(colors: [.red, .yellow, .green, .blue, .purple, .red], center: .center)
-      
-      // Standaard gradient, als modifier:
-        Text("Your content")
-        .foregroundStyle(.white)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.indigo.gradient)
-        
-        
-      
+      Button("Button 6") { }
+        .buttonStyle(.borderedProminent)
+        .tint(.indigo)
+
+      Button("Delete selection") {
+        executeDelete()
+      }
     }
+  }
+  
+  func executeDelete() {
+    print("Now deleting...")
+  }
 }
 
 #Preview {
-    ContentView()
+  ContentView()
 }
