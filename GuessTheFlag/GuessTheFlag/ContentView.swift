@@ -16,9 +16,9 @@ struct ContentView: View {
         Text("Play") } icon: {
           Image(systemName: "gamecontroller")
             .font(.largeTitle)
-            .foregroundStyle(Gradient(colors: [.red, .yellow]))
         }
     }
+    .foregroundStyle(Gradient(colors: [.red, .yellow]))
 
   }
   
