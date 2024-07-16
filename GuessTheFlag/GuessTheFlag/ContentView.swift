@@ -9,40 +9,20 @@ import SwiftUI
 
 struct ContentView: View {
   var body: some View {
-    MyGrid()
-    Spacer()
-  }
-}
+    ZStack {
 
-
-struct MyGrid: View {
-  var body: some View {
-    VStack {
-      ForEach(1..<4) { row in
-        VStack {
-          HStack(alignment: .top, spacing: 20) {
-            ForEach(1..<4) { col in
-              BlockText("\(row) - \(col)")
-            }
-          }
-        }
+      VStack(spacing: 0) {
+        Color.red
+        Color.blue
       }
-    }
-  }
-}
-
-struct BlockText: View {
-  var title: String
-  
-  init(_ title: String) {
-    self.title = title
-  }
-  
-  var body: some View {
-    Text(title)
-      .padding()
-      .border(Color.black)
-      .padding()
+      
+      Text("Your Content")
+        .foregroundStyle(.secondary)
+        .padding(50)
+        .background(.ultraThinMaterial)
+        .cornerRadius(15)
+      
+    }.ignoresSafeArea()
   }
 }
 
