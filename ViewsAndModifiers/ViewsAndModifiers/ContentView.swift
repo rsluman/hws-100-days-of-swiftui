@@ -7,32 +7,38 @@
 
 import SwiftUI
 
-// Run in simulator, not in Canvas
 struct ContentView: View {
+  @State private var isRed = false
   var body: some View {
-    VStack {
-      Text("1")
-      Text("2")
-    }
-    Text("Hello")
-    Text ("World!")
-    Button("Hello, World!") {
-      print(type(of: self.body))
-      // TupleView<(Text, Text, Button<Text>)>
-    }
-  }
-}
+    VStack(spacing: 20) {
 
-struct TupleViewDemoView: View {
-  var body: some View {
-    TupleView(
-      (Text("Item 1"),
-       Text("Item 2"),
-       Text("Item 3")))
+      VStack(spacing: 20) {
+        // Optimaal:
+        
+        Text("Demo (optimaal)")
+          .foregroundStyle(isRed ? .red : .blue)
+        
+        // Suboptimaal: state-change -> een nieuwe View
+        
+        if isRed { // suboptimaal!
+          Text("Demo (suboptimaal)")
+            .foregroundColor(.red)
+        } else {
+          Text("Demo (suboptimaal)")
+            .foregroundStyle(.blue)
+        }
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .background(isRed ? .blue : .red)
+
+      Button("Tap to Change Color") {
+        isRed.toggle()
+      }
+      
+    }
   }
 }
 
 #Preview {
-//  ContentView()
-  TupleViewDemoView()
+  ContentView()
 }
