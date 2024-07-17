@@ -8,33 +8,37 @@
 import SwiftUI
 
 struct ContentView: View {
-  @State private var isRed = false
+
+  let t1 = Text("A simple constant")
+
+  // let wrongT1 = Text("Hello (not").padding().background(.red)
+  // ERROR: Property definition has inferred type 'some View', involving the 'some' return type of another declaration
+  
+  let t2: some View = Text("With one modifier").padding().background(.green)
+  
+  var t3: some View {
+    Text("Computed property")
+      .padding()
+      .background(.red)
+  }
+
+  @ViewBuilder var t4: some View {
+    Text("ViewBuilder")
+      .padding()
+      .background(.yellow)
+
+  }
+  
+  
   var body: some View {
     VStack(spacing: 20) {
-
-      VStack(spacing: 20) {
-        // Optimaal:
-        
-        Text("Demo (optimaal)")
-          .foregroundStyle(isRed ? .red : .blue)
-        
-        // Suboptimaal: state-change -> een nieuwe View
-        
-        if isRed { // suboptimaal!
-          Text("Demo (suboptimaal)")
-            .foregroundColor(.red)
-        } else {
-          Text("Demo (suboptimaal)")
-            .foregroundStyle(.blue)
-        }
+      t1
+      t2
+      t3
+      t4
+      Button("Show self's type") {
+        print(type(of: self))
       }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .background(isRed ? .blue : .red)
-
-      Button("Tap to Change Color") {
-        isRed.toggle()
-      }
-      
     }
   }
 }
