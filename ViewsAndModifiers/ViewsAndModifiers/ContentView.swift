@@ -10,22 +10,29 @@ import SwiftUI
 // Run in simulator, not in Canvas
 struct ContentView: View {
   var body: some View {
+    VStack {
+      Text("1")
+      Text("2")
+    }
+    Text("Hello")
+    Text ("World!")
     Button("Hello, World!") {
       print(type(of: self.body))
-      // ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<Button<Text>, _BackgroundStyleModifier<Color>>, _PaddingLayout>, _BackgroundStyleModifier<Color>>, _PaddingLayout>, _BackgroundStyleModifier<Color>>, _PaddingLayout>, _BackgroundStyleModifier<Color>>, _PaddingLayout>, _BackgroundStyleModifier<Color>>
+      // TupleView<(Text, Text, Button<Text>)>
     }
-    .background(.red)
-    .padding()
-    .background(.green)
-    .padding()
-    .background(.blue)
-    .padding()
-    .background(.yellow)
-    .padding()
-    .background(.indigo)
+  }
+}
+
+struct TupleViewDemoView: View {
+  var body: some View {
+    TupleView(
+      (Text("Item 1"),
+       Text("Item 2"),
+       Text("Item 3")))
   }
 }
 
 #Preview {
-  ContentView()
+//  ContentView()
+  TupleViewDemoView()
 }
