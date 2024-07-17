@@ -7,16 +7,22 @@
 
 import SwiftUI
 
+// Run in simulator, not in Canvas
 struct ContentView: View {
   var body: some View {
-    VStack(alignment: .leading) {
-      Image(systemName: "globe")
-        .imageScale(.large)
-        .foregroundStyle(.tint)
-      Text("Hello, world!")
+    Button("Hello, World!") {
+      print(type(of: self.body))
+      // ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<Button<Text>, _BackgroundStyleModifier<Color>>, _PaddingLayout>, _BackgroundStyleModifier<Color>>, _PaddingLayout>, _BackgroundStyleModifier<Color>>, _PaddingLayout>, _BackgroundStyleModifier<Color>>, _PaddingLayout>, _BackgroundStyleModifier<Color>>
     }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(.red)
+    .padding()
+    .background(.green)
+    .padding()
+    .background(.blue)
+    .padding()
+    .background(.yellow)
+    .padding()
+    .background(.indigo)
   }
 }
 
