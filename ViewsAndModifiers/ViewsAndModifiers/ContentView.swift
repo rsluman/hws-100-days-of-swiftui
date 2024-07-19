@@ -7,56 +7,34 @@
 
 import SwiftUI
 
-extension View {
-  var titleStyle: some View {
-    self.modifier(Title())
-  }
-}
-
-struct Title: ViewModifier {
-  func body(content: Content) -> some View {
-    content
-      .font(.largeTitle)
-      .foregroundStyle(.white)
-      .padding()
-      .background(.blue)
-      .clipShape(RoundedRectangle(cornerRadius: 15))
-  }
-}
-
-extension View {
-  func watermarked(with text: String) -> some View {
-    self.modifier(Watermark(text: text))
-  }
-  
-}
-
-
-struct Watermark: ViewModifier {
-  var text: String
-  
-  func body(content: Content) -> some View {
-    ZStack(alignment: .bottomTrailing) {
-      content
-      
-      Text(text)
-        .font(.caption)
-        .foregroundStyle(.white)
-        .padding(5)
-        .background(.black)
-    }
-    
-  }
-}
-
-
-struct ContentView: View {
+struct GridStack<Content: View>: View {
+  let rows: Int
+  let columns: Int
+  let content: (Int, Int) -> Content
   
   var body: some View {
-    Text("Hello world!")
-      .frame(width: 200, height: 200)
-      .background(.blue)
-      .watermarked(with: "Hacking with Swift")
+    ForEach(0..<rows, id: \.self) { row in
+      VStack(spacing: 10) {
+        HStack(spacing: 10) {
+          ForEach(0..<columns, id: \.self) { column in
+            content(row, column)
+          }
+        }
+      }
+    }
+  }
+}
+
+struct ContentView: View {
+  let colors: [Color] = [
+    .green, .blue, .red, .yellow, .purple, .brown, .indigo, .mint, .orange
+  ]
+  
+  var body: some View {
+    GridStack(rows: 3, columns: 3) { row, column in
+      Color(colors[row * 3 + column])
+    }
+    .padding()
   }
 }
 
