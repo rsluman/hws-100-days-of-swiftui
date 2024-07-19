@@ -35,6 +35,7 @@ struct ContentView: View {
       Color(colors[row * 3 + column])
     }
     .padding()
+    Image(systemName: "a.circle")
   }
 }
 
