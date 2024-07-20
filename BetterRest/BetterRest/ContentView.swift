@@ -17,6 +17,8 @@ struct ContentView: View {
   @State private var alertMessage  = ""
   @State private var isShowingAlert = false
   
+  @State private var bedTime = ""
+  
   static private var defaultWakeTime: Date {
     var components = DateComponents()
     components.hour = 7
@@ -24,29 +26,53 @@ struct ContentView: View {
     return Calendar.current.date(from: components) ?? .now
   }
   
-  
   var body: some View {
     NavigationStack {
-      Form {
-        Section("When do you want to wake up?") {
-          DatePicker("Enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
-            .labelsHidden()
-        }
-        
-        
-        Section("Desired amount of sleep") {
-          Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
-            Text("\(sleepAmount.formatted()) hours")
+      VStack {
+        Form {
+          Section("When do you want to wake up?") {
+            DatePicker("Enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+              .labelsHidden()
+              .onChange(of: wakeUp) {
+                calculateBedTime()
+              }
+          }
+          
+          
+          Section("Desired amount of sleep") {
+            Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
+              Text("\(sleepAmount.formatted()) hours")
+            }
+            .onChange(of: sleepAmount) {
+              calculateBedTime()
+            }
+          }
+          
+          Section("Daily Coffee Intake") {
+            //            Picker("Number of cups", selection: $coffeeAmount) {
+            //              ForEach(0..<21) { amount in
+            //                Text("\(amount)")
+            //              }
+            //            }
+            
+            Stepper(value: $coffeeAmount, in: 0...20) {
+              Text("^[\(coffeeAmount) cup](inflect: true)")
+            }
+            .onChange(of: coffeeAmount) {
+              calculateBedTime()
+            }
+
           }
         }
+        .padding()
         
-        Section("Daily Coffee Intake") {
-          Stepper(value: $coffeeAmount, in: 0...20) {
-            Text("^[\(coffeeAmount) cup](inflect: true)")
-          }
-        }
+        Text("Your Bedtime: \(bedTime)")
+          .font(.largeTitle)
+          .fontWeight(.semibold)
       }
-      .padding()
+      .onAppear() {
+        calculateBedTime()
+      }
       
       .alert(alertTitle, isPresented: $isShowingAlert) {
         Button("OK") { }
@@ -55,9 +81,6 @@ struct ContentView: View {
       }
       
       .navigationTitle("BetterRest")
-      .toolbar {
-        Button("Calculate", action: calculateBedTime)
-      }
     }
   }
   
@@ -76,15 +99,14 @@ struct ContentView: View {
       
       let sleepTime = wakeUp - prediction.actualSleep
       
-      alertTitle = "Your ideal bedtime is …"
-      alertMessage = sleepTime.formatted(date: .omitted, time: .shortened)
+      bedTime = sleepTime.formatted(date: .omitted, time: .shortened)
     } catch {
       // something went wrong
       alertTitle = "Error"
       alertMessage = "Sorry, there was a problem calculating your bedtime."
+      isShowingAlert = true
     }
     
-    isShowingAlert = true
     
   }
 }
