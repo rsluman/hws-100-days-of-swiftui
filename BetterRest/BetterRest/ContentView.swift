@@ -8,31 +8,45 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-      
-        .onAppear() {
-          exampleDates()
-        }
-    }
+  @State private var wakeUp = Date.now
+  @State private var sleepAmount = 8.0
+  @State private var coffeeAmount = 1
   
-  func exampleDates() {
-    var components = DateComponents()
-    components.hour = 8
-    components.minute = 0
-    let date = Calendar.current.date(from: components) ?? .now
-    print(date.formatted())
-    print(Date.now.formatted(date: .numeric, time: .omitted))
+  var body: some View {
+    NavigationStack {
+      List {
+        Section("When do you want to wake up?") {
+          DatePicker("Enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+            .labelsHidden()
+        }
+        
+        
+        Section("Desired amount of sleep") {
+          Stepper(value: $sleepAmount, in: 4...12, step: 0.25) {
+            Text("\(sleepAmount.formatted()) hours")
+          }
+        }
+
+        Section("Daily Coffee Intake") {
+          Stepper(value: $coffeeAmount, in: 0...20) {
+            Text("\(coffeeAmount.formatted()) cup\(coffeeAmount != 1 ? "s" : "")")
+          }
+        }
+
+
+      }
+      .navigationTitle("BetterRest")
+      .toolbar {
+        Button("Calculate", action: calculateBedTime)
+      }
+    }
+  }
+  
+  func calculateBedTime() {
     
   }
 }
 
 #Preview {
-    ContentView()
+  ContentView()
 }
