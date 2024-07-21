@@ -8,41 +8,71 @@
 import SwiftUI
 
 struct ContentView: View {
+  @State private var usedWords = [String]()
+  @State private var rootWord = ""
+  @State private var newWord = ""
+  
+  @State private var shouldShowIncorrectEntry = false
+  
   var body: some View {
-    VStack {
-      Image(systemName: "globe")
-        .imageScale(.large)
-        .foregroundStyle(.tint)
-      Text("Hello, world!")
-    }
-    .padding()
-    .onAppear {
-      testStrings()
+    NavigationStack {
+      List {
+        Section {
+          TextField("Enter your word", text: $newWord)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled(true)
+            .foregroundStyle(shouldShowIncorrectEntry ? .red : .primary)
+            .onSubmit(addNewWord)
+          
+            .onChange(of: newWord) {
+              if newWord.isEmpty {
+                shouldShowIncorrectEntry = false
+              }
+            }
+        }
+        
+        Section {
+          ForEach(usedWords, id: \.self) { word in
+            HStack {
+              Image(systemName: "\(word.count).circle")
+                .foregroundStyle(.secondary)
+              Text(word)
+            }
+          }
+        }
+      }
+      .navigationTitle(rootWord)
     }
   }
   
-  func testStrings() {
-//    let input = """
-//                a
-//                b
-//                c
-//                """
-//    
-//    let trimmedString = input.trimmingCharacters(in: .whitespaces)
-//    let stringArray = trimmedString.components(separatedBy: "\n")
-//    let randomString = stringArray.randomElement()
-//    print(randomString!)
+  func addNewWord() {
+    var word = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines )
     
-    let word = "swift"
+    guard !word.isEmpty else { return }
+    
+    if isSpelledCorrectly(word: word) {
+      if !usedWords.contains(word) {
+        shouldShowIncorrectEntry = false
+        
+        withAnimation {
+          usedWords.insert(word, at: 0)
+          newWord = ""
+        }
+      }
+    } else {
+      shouldShowIncorrectEntry = true
+    }
+  }
+  
+  func isSpelledCorrectly(word: String) -> Bool {
     let checker = UITextChecker()
     let range = NSRange(location: 0, length: word.utf16.count)
-    let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
     
-    let allGood = misspelledRange.location == NSIntegerMax
-    print(allGood)
-    print(misspelledRange.location)
-    print(NSNotFound == misspelledRange.location)
+    let checkedRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
+    
+    return checkedRange.location == NSNotFound
   }
+  
 }
 
 #Preview {
