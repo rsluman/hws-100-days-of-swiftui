@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+  let minimumWordLength = 3
+  
   @State private var usedWords = [String]()
   @State private var rootWord = ""
   @State private var newWord = ""
@@ -16,7 +18,7 @@ struct ContentView: View {
   @State private var errorMessage = ""
   @State private var shouldShowError = false
   
-  @State private var shouldShowIncorrectEntry = false
+  @State private var score = 0
   
   var body: some View {
     NavigationStack {
@@ -25,14 +27,8 @@ struct ContentView: View {
           TextField("Enter your word", text: $newWord)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled(true)
-            .foregroundStyle(shouldShowIncorrectEntry ? .red : .primary)
             .onSubmit(addNewWord)
           
-            .onChange(of: newWord) {
-              if newWord.isEmpty {
-                shouldShowIncorrectEntry = false
-              }
-            }
         }
         
         Section {
@@ -45,12 +41,23 @@ struct ContentView: View {
           }
         }
       }
+      .toolbar {
+        Button("New Game", action: startGame)
+      }
+      
       .navigationTitle(rootWord)
       .onAppear(perform: startGame)
       
       .alert(errorTitle, isPresented: $shouldShowError) { } message: {
         Text(errorMessage)
       }
+      
+      Spacer()
+      
+      Text("Your score: \(score)")
+        .font(.largeTitle)
+        .fontWeight(.semibold)
+        .foregroundStyle(.secondary)
     }
   }
   
@@ -76,18 +83,19 @@ struct ContentView: View {
     guard !word.isEmpty else { return }
     
     if isOkToAdd(word: word) {
-      shouldShowIncorrectEntry = false
-      
       withAnimation {
         usedWords.insert(word, at: 0)
+        calculateScore()
         newWord = ""
       }
-    } else {
-      shouldShowIncorrectEntry = true
     }
   }
   
   func isOkToAdd(word: String) -> Bool {
+    guard isLongEnough(word: word) else {
+      wordError(title: "Word is too short", message: "Use at least \(minimumWordLength) characters")
+      return false
+    }
     guard isOriginal(word: word) else {
       wordError(title: "Word used already", message: "Be more original!")
       return false
@@ -107,7 +115,7 @@ struct ContentView: View {
   }
   
   func isOriginal(word: String) -> Bool {
-    return !usedWords.contains(word)
+    return word != rootWord && !usedWords.contains(word)
   }
   
   func isPossible(word: String) -> Bool {
@@ -132,10 +140,22 @@ struct ContentView: View {
     return misspelledRange.location == NSNotFound
   }
   
+  func isLongEnough(word: String) -> Bool {
+    return word.count >= minimumWordLength
+  }
+  
   func wordError(title: String, message: String) {
     errorTitle = title
     errorMessage = message
     shouldShowError = true
+  }
+  
+  func calculateScore() {
+    var score = 0
+    for word in usedWords {
+      score += word.count
+    }
+    self.score = score
   }
   
   
