@@ -42,7 +42,24 @@ struct ContentView: View {
         }
       }
       .navigationTitle(rootWord)
+      .onAppear(perform: startGame)
     }
+  }
+  
+  func startGame() {
+    if let url = Bundle.main.url(forResource: "start", withExtension: "txt") {
+      if let contents = try? String.init(contentsOf: url) {
+        
+        let allWords = contents.components(separatedBy: .newlines)
+          .reduce([String]()) { $0 + [$1.trimmingCharacters(in: .whitespaces)] }
+        
+        if let randomWord = allWords.randomElement() {
+          rootWord = randomWord
+          return
+        }
+      }
+    }
+    fatalError("Could not find rootword in bundle")
   }
   
   func addNewWord() {
