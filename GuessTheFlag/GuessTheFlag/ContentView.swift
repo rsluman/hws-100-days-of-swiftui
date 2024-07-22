@@ -75,6 +75,7 @@ struct ContentView: View {
                 )
                 .animation(nil, value: flagToAnimate)
                 .opacity(flagToAnimate != nil && flagToAnimate! != number ? 0.2 : 1)
+                .scaleEffect(CGSize(width: 1, height: flagToAnimate != nil && flagToAnimate! != number ? 0.2 : 1))
                 .animation(.linear, value: flagToAnimate)
                 
             }
