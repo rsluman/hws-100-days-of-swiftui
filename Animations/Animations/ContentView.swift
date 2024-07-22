@@ -9,19 +9,19 @@ import SwiftUI
 
 struct ContentView: View {
   
-  @State private var animationAmount = 0.0
+  @State private var isEnabled = false
   
   var body: some View {
     Button("Tap me") {
-      withAnimation(.easeInOut.speed(0.1).repeatForever(autoreverses: false)) {
-        animationAmount += 360
-      }
+      isEnabled.toggle()
     }
-    .padding(50)
-    .background(.red)
+    .frame(width: 200, height: 200)
+    .background(isEnabled ? .blue : .red)
     .foregroundStyle(.white)
-    .clipShape(.circle)
-    .rotation3DEffect(.degrees(animationAmount), axis: (x: 0.0, y: 1.0, z: 0.0))
+//    .animation(.default, value: isEnabled) // animate any modifiers before this / (or since the previous .animation)
+    .animation(nil, value: isEnabled) // Don't animate any modifiers before this / (or since the previous .animation)
+    .clipShape(.rect(cornerRadius: isEnabled ? 60 : 0))
+    .animation(.easeIn(duration: 5), value: isEnabled) // pertains to .clipshape only!
   }
 }
 
