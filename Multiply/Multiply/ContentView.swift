@@ -33,6 +33,8 @@ struct ContentView: View {
   @State private var submittedAnswers = [Bool]() // true: answer was correct
   @State private var score = 0
   
+  @FocusState private var isKeyboardFocused: Bool
+  
   var body: some View {
     NavigationStack {
       ZStack {
@@ -52,7 +54,7 @@ struct ContentView: View {
       }
       .navigationTitle("Multiply")
       .toolbar {
-        Button("New Game", action: newGame)
+        Button("New Game", action: setupGame)
       }
     }
   }
@@ -96,7 +98,19 @@ struct ContentView: View {
         Text("\(multiplicand) x \(multiplier) =")
           .font(.largeTitle)
         TextField("Your answer?", text: $answer)
+          .focused($isKeyboardFocused)
+          .keyboardType(.numberPad)
           .font(.largeTitle)
+          .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+              Spacer()
+              Button("Done") {
+                processAnswer()
+              }
+              .disabled(answer == "")
+            }
+          }
+        
           .onSubmit(processAnswer)
         
         
@@ -108,6 +122,7 @@ struct ContentView: View {
       Text("Your Score: \(score)")
         .font(.title)
     }
+    .padding()
   }
   
   @ViewBuilder var gameOverView: some View {
@@ -119,7 +134,7 @@ struct ContentView: View {
       Spacer()
       Text("How about another one?")
         .font(.title3)
-      StartButton(action: newGame)
+      StartButton(action: setupGame)
     }
   }
   
@@ -145,8 +160,9 @@ struct ContentView: View {
     }
   }
   
-  func newGame() {
+  func setupGame() {
     gameState = .setup
+    isKeyboardFocused = false
   }
   
   func startGame() {
@@ -157,10 +173,12 @@ struct ContentView: View {
   }
   
   func nextRound() {
+    isKeyboardFocused = true
     currentQuestion += 1
     if currentQuestion <= numberOfQuestions {
       makeQuestion()
     } else {
+      isKeyboardFocused = false
       gameState = .gameOver
     }
   }
@@ -174,7 +192,10 @@ struct ContentView: View {
   func processAnswer() {
     guard !answer.isEmpty else { return } // no answer given
     
-    guard let answer = Int(answer) else { return } // no int value
+    guard let answer = Int(answer) else {
+      answer = ""
+      return
+    } // no int value
     
     if isCorrectAnswer(answer) {
       submittedAnswers.append(true)
