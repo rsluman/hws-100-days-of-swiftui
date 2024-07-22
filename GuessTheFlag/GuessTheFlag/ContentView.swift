@@ -33,7 +33,6 @@ struct ContentView: View {
   @State private var isGameOver = false
   
   @State private var flagToAnimate: Int?
-  @State private var rotationAmounts = [0.0, 0.0, 0.0] // ééntje voor elke vlag
   
   let maxRounds = 8
   let gameOverTitle = "Game Over!"
@@ -67,15 +66,16 @@ struct ContentView: View {
           ForEach(0..<3) { number in
             Button {
               flagToAnimate = number
-              rotationAmounts[number] += 360
-              print(rotationAmounts)
               flagTapped(number)
             } label: {
               FlagImage(country: countries[number])
                 .rotation3DEffect(
-                  .degrees(flagToAnimate == number ? rotationAmounts[number] : 0),
+                  .degrees(flagToAnimate == number ? 360 : 0),
                                         axis: (x: 0.0, y: 1.0, z: 0.0)
                 )
+                .animation(nil, value: flagToAnimate)
+                .opacity(flagToAnimate != nil && flagToAnimate! != number ? 0.2 : 1)
+                .animation(.linear, value: flagToAnimate)
                 
             }
             
@@ -132,6 +132,7 @@ struct ContentView: View {
   }
   
   func nextRound() {
+    flagToAnimate = nil
     if round < maxRounds {
       round += 1
       askQuestion()
