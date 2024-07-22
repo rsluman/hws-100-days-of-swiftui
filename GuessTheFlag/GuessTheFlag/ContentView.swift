@@ -28,14 +28,17 @@ struct ContentView: View {
   @State private var scoreMessage = ""
   
   @State private var score = 0
-
+  
   @State private var round = 1
   @State private var isGameOver = false
+  
+  @State private var flagToAnimate: Int?
+  @State private var rotationAmounts = [0.0, 0.0, 0.0] // ééntje voor elke vlag
   
   let maxRounds = 8
   let gameOverTitle = "Game Over!"
   
-
+  
   var body: some View {
     ZStack {
       RadialGradient(stops: [
@@ -43,10 +46,10 @@ struct ContentView: View {
         .init(color: .mutedRed, location: 0.3)
       ], center: .top, startRadius: 200, endRadius: 700)
       .ignoresSafeArea()
-
+      
       VStack {
         Spacer()
-
+        
         Text("Guess the Flag")
           .font(.largeTitle.bold())
           .foregroundColor(.white)
@@ -63,9 +66,17 @@ struct ContentView: View {
           
           ForEach(0..<3) { number in
             Button {
+              flagToAnimate = number
+              rotationAmounts[number] += 360
+              print(rotationAmounts)
               flagTapped(number)
             } label: {
               FlagImage(country: countries[number])
+                .rotation3DEffect(
+                  .degrees(flagToAnimate == number ? rotationAmounts[number] : 0),
+                                        axis: (x: 0.0, y: 1.0, z: 0.0)
+                )
+                
             }
             
             
@@ -76,7 +87,7 @@ struct ContentView: View {
         .padding(.vertical, 20)
         
         .background(.regularMaterial)
-      .clipShape(.rect(cornerRadius: 20))
+        .clipShape(.rect(cornerRadius: 20))
         
         Spacer()
         Spacer()
@@ -95,19 +106,19 @@ struct ContentView: View {
     } message: {
       Text(scoreMessage)
     }
-
+    
     .alert(gameOverTitle, isPresented: $isGameOver) {
       Button("New Game", action: resetGame)
     } message: {
       Text("Your Final Score: \(score)")
     }
-
+    
     
   }
   
   func flagTapped(_  number: Int) {
     score = number == correctAnswer ? score + 1 : max(score - 1, 0)
-
+    
     if number == correctAnswer {
       scoreTitle = "😊 Correct!"
       scoreMessage = "Your score: \(score)."
@@ -116,17 +127,15 @@ struct ContentView: View {
       scoreTitle = "🙁 Wrong"
       scoreMessage = "That is the flag of \(countries[number])."
     }
-
+    
     isShowingScore = true
   }
   
   func nextRound() {
     if round < maxRounds {
       round += 1
-      print("increased round to \(round): next question")
       askQuestion()
     } else {
-      print("round is now \(round): game over")
       isGameOver = true
     }
   }
