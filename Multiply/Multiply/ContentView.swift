@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+extension Color {
+  static var customGreen: Color {
+    Color(UIColor(_colorLiteralRed: 0.2, green: 0.6, blue: 0.1, alpha: 1))
+  }
+  
+}
 enum GameState {
   case setup
   case playing
@@ -52,6 +58,8 @@ struct ContentView: View {
           gameOverView
         }
       }
+      .animation(/*@START_MENU_TOKEN@*/.easeIn/*@END_MENU_TOKEN@*/, value: gameState)
+
       .navigationTitle("Multiply")
       .toolbar {
         Button("New Game", action: setupGame)
@@ -142,7 +150,10 @@ struct ContentView: View {
     HStack {
       ForEach(1...numberOfQuestions, id: \.self) { question in
         Rectangle()
-          .fill(progressBarItemColorForQuestion(question))
+        .fill(progressBarItemColorForQuestion(question))
+        .clipShape(Capsule())
+        .scaleEffect(CGSize(width: 1.0, height: (question == currentQuestion ? 2.0 : 1.0) ))
+        .animation(/*@START_MENU_TOKEN@*/.easeIn/*@END_MENU_TOKEN@*/, value: currentQuestion)
       }
     }
     .frame(height: 20)
@@ -156,7 +167,7 @@ struct ContentView: View {
       return .gray
     } else {
       // answer has already been given
-      return submittedAnswers[question - 1] ? .green : .red
+      return submittedAnswers[question - 1] ? .customGreen : .red
     }
   }
   
@@ -213,7 +224,9 @@ struct ContentView: View {
   }
   
   func increaseScore() {
-    score += (highestTableSelected - 1)
+    withAnimation(.easeInOut) {
+      score += (highestTableSelected - 1)
+    }
   }
   
 }
