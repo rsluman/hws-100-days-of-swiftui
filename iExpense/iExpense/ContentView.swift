@@ -22,21 +22,36 @@ class Expenses {
 struct ContentView: View {
   @State var expenses = Expenses()
   
+  @State private var showingAddExpense = false
+  
   var body: some View {
     NavigationStack {
-        List {
-          ForEach(expenses.items) { item in
-            Text(item.name)
-          }
-          .onDelete(perform: removeItems)
+      List {
+        ForEach(expenses.items) { item in
+          Text(item.name)
+        }
+        .onDelete(perform: removeItems)
       }
       .navigationTitle("iExpense")
       .toolbar {
+        //        Button("Add Expense", systemImage: "plus") {
+        //          let item = ExpenseItem(name: "Test", type: "Personal", amount: 5)
+        //          expenses.items.append(item)
+        //        }
+        
+        //        NavigationLink(destination: AddView()) {
+        //          Label("Add Expense", systemImage: "plus")
+        //        }
+        
         Button("Add Expense", systemImage: "plus") {
-          let item = ExpenseItem(name: "Test", type: "Personal", amount: 5)
-          expenses.items.append(item)
+          showingAddExpense = true
         }
+        
       }
+      .sheet(isPresented: $showingAddExpense) {
+        AddView(expenses: expenses)
+      }
+      
     }
   }
   
