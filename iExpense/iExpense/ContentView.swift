@@ -13,29 +13,31 @@ struct ContentView: View {
   
   var body: some View {
     NavigationStack {
-      List {
-        ForEach(numbers, id: \.self) {
-          Text("\($0)")
+      VStack {
+        List {
+          ForEach(numbers, id: \.self) {
+            Text("\($0)")
+          }
+          // .onDelete { removeRows(atOffsets: $0) }
+          .onDelete(perform: removeRows)
         }
-        .onDelete { deleteNumber($0) }
-      }
-      .toolbar {
-        Button("Add") {
+        
+        Button("Add Number") {
           numbers.append(currentNumber)
           currentNumber += 1
         }
+      }
+      .toolbar {
+        EditButton()
       }
     }
     
   }
   
-  func deleteNumber(_ indexSet: IndexSet) {
-    if let i = indexSet.first {
-      numbers.remove(at: i)
-    }
+  func removeRows(atOffsets offsets: IndexSet) {
+    numbers.remove(atOffsets: offsets)
   }
 }
-
 
 
 #Preview {
