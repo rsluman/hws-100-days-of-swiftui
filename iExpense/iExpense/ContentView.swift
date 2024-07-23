@@ -27,16 +27,24 @@ struct ContentView: View {
           ForEach(expenses.items, id: \.name) { item in
             Text(item.name)
           }
-          .onDelete() { expenses.items.remove(atOffsets: $0) }
+          .onDelete(perform: removeItems)
       }
       .navigationTitle("iExpense")
       .toolbar {
-        NavigationLink("Add Item", destination: AddItemView(expenses: expenses))
+        Button("Add Expense", systemImage: "plus") {
+          let item = ExpenseItem(name: "Test", type: "Personal", amount: 5)
+          expenses.items.append(item)
+        }
       }
     }
   }
+  
+  func removeItems(atOffsets offsets: IndexSet) {
+    expenses.items.remove(atOffsets: offsets)
+  }
 }
 
+/*
 struct AddItemView: View {
   @Environment(\.dismiss) private var dismiss
   
@@ -65,6 +73,8 @@ struct AddItemView: View {
     }
   }
 }
+ 
+ */
 
 #Preview {
   ContentView()
