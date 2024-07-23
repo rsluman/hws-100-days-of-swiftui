@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ExpenseItem: Identifiable, Codable {
+  static let types = ["Business", "Personal"]
+
   var id = UUID()
   let name: String
   let type: String
@@ -23,6 +25,21 @@ class Expenses {
         UserDefaults.standard.setValue(encoded, forKey: "Items")
       }
     }
+  }
+
+  // Separate expenses into categories:
+  var itemsByType: [String : [ExpenseItem]] {
+    var result = [String : [ExpenseItem]]()
+
+    for type in ExpenseItem.types {
+      result[type] = items.filter() { $0.type == type }
+    }
+    
+    return result
+  }
+  
+  func removeItem(with id: UUID) {
+    self.items.removeAll() { $0.id == id }
   }
   
   init() {
@@ -43,10 +60,17 @@ struct ContentView: View {
   var body: some View {
     NavigationStack {
       List {
-        ForEach(expenses.items) { item in
-          ExpenseItemView(item: item)
+        ForEach(ExpenseItem.types, id: \.self) { type in
+
+          Section(type) {
+            ForEach(expenses.itemsByType[type] ?? [ExpenseItem]()) { item in
+              ExpenseItemView(item: item)
+            }
+            .onDelete { indexSet in
+              removeItem(type: type, atOffsets: indexSet)
+            }
+          }
         }
-        .onDelete(perform: removeItems)
       }
       .navigationTitle("iExpense")
       .toolbar {
@@ -63,8 +87,10 @@ struct ContentView: View {
     }
   }
   
-  func removeItems(atOffsets offsets: IndexSet) {
-    expenses.items.remove(atOffsets: offsets)
+  func removeItem(type: String, atOffsets offsets: IndexSet) {
+    if let first = offsets.first, let item = expenses.itemsByType[type]?[first] {
+      expenses.removeItem(with: item.id)
+    }
   }
 }
 
@@ -98,5 +124,4 @@ struct ExpenseItemView: View {
 
 #Preview {
   ContentView()
-//  ExpenseItemView(item: ExpenseItem(name: "Lunch", type: "Work", amount: 15.23))
 }
