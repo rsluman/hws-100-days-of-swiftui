@@ -44,20 +44,12 @@ struct ContentView: View {
     NavigationStack {
       List {
         ForEach(expenses.items) { item in
-          Text(item.name)
+          ExpenseItemView(item: item)
         }
         .onDelete(perform: removeItems)
       }
       .navigationTitle("iExpense")
       .toolbar {
-        //        Button("Add Expense", systemImage: "plus") {
-        //          let item = ExpenseItem(name: "Test", type: "Personal", amount: 5)
-        //          expenses.items.append(item)
-        //        }
-        
-        //        NavigationLink(destination: AddView()) {
-        //          Label("Add Expense", systemImage: "plus")
-        //        }
         
         Button("Add Expense", systemImage: "plus") {
           showingAddExpense = true
@@ -76,38 +68,25 @@ struct ContentView: View {
   }
 }
 
-/*
-struct AddItemView: View {
-  @Environment(\.dismiss) private var dismiss
+struct ExpenseItemView: View {
+  var item: ExpenseItem
   
-  @State var expenses: Expenses
-  
-  @State var itemName = ""
-  @State var itemType = ""
-  @State var itemAmount = ""
-
   var body: some View {
-    Form {
-      TextField("Name", text: $itemName)
-      TextField("Type", text: $itemType)
-      TextField("Amount", text: $itemAmount)
-        .keyboardType(.decimalPad)
-    }
-    .toolbar {
-      Button("Save") {
-        if let itemAmount = Double(itemAmount), !itemName.isEmpty && !itemType.isEmpty && !itemAmount.isZero  {
-          expenses.items.append(ExpenseItem(name: itemName, type: itemType, amount: itemAmount))
-        }
-        dismiss()
-        return
-        
+    HStack(alignment: .top) {
+      VStack(alignment: .leading) {
+        Text(item.name)
+          .font(.headline)
+        Text(item.type)
+          .font(.caption)
       }
+      Spacer()
+      Text(item.amount.formatted(.currency(code: Locale.current.currency?.identifier ?? "USD")))
     }
   }
 }
- 
- */
+
 
 #Preview {
   ContentView()
+//  ExpenseItemView(item: ExpenseItem(name: "Lunch", type: "Work", amount: 15.23))
 }
