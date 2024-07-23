@@ -70,6 +70,15 @@ struct ContentView: View {
 
 struct ExpenseItemView: View {
   var item: ExpenseItem
+  var amountFont: Font {
+    if item.amount >= 100 {
+      return .title
+    }
+    if item.amount >= 10 {
+      return .title2
+    }
+    return .title3
+  }
   
   var body: some View {
     HStack(alignment: .top) {
@@ -81,6 +90,7 @@ struct ExpenseItemView: View {
       }
       Spacer()
       Text(item.amount.formatted(.currency(code: Locale.current.currency?.identifier ?? "USD")))
+        .font(amountFont)
     }
   }
 }
