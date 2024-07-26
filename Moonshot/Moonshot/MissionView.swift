@@ -38,6 +38,12 @@ struct MissionView: View {
             return width * 0.6
           }
         
+        if let date = mission.launchDate {
+          Text(date.formatted(date: .complete, time: .omitted))
+            .font(.headline)
+            .padding(.top, 5)
+        }
+        
         VStack(alignment: .leading) {
           CustomDivider()
           
@@ -110,7 +116,8 @@ struct CustomDivider: View {
   let missions: [Mission] = Bundle.main.decode("missions.json")
   let astronauts: [String : Astronaut] = Bundle.main.decode("astronauts.json")
   
-  return MissionView(missions.first!, astronauts: astronauts)
+  return MissionView(missions[1], astronauts: astronauts)
     .preferredColorScheme(.dark)
+  
 }
 
