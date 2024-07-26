@@ -8,8 +8,24 @@
 import SwiftUI
 
 struct MissionView: View {
+  struct CrewMember {
+    let role: String
+    let astronaut: Astronaut
+  }
+  
   var mission: Mission
   var astronauts: [String : Astronaut]
+  var crewMembers: [CrewMember] {
+    var members = [CrewMember]()
+    for member in mission.crew {
+      guard let astronaut = astronauts[member.name] else {
+        fatalError("MissionView: no astronaut data for \(member.name)")
+      }
+
+      members.append(CrewMember(role: member.role, astronaut: astronaut))
+    }
+    return members
+  }
   
   init(_ mission: Mission, astronauts: [String : Astronaut]) {
     self.mission = mission
@@ -35,6 +51,9 @@ struct MissionView: View {
             
         }
         .padding()
+        
+        Text(crewMembers[0].role)
+        
       }
     }
     .navigationTitle(mission.displayName)
