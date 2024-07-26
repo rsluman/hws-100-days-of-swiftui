@@ -8,22 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-  let layout = [
-//    GridItem(.adaptive(minimum: 80))
-    GridItem(.adaptive(minimum: 30))
-  ]
+  let astronauts: [String : Astronaut] = Bundle.main.decode("astronauts.json")
   
   var body: some View {
-    ScrollView(.horizontal) {
-      LazyHGrid(rows: layout) {
-        ForEach(0..<1000) {
-          Text("Item \($0)")
-        }
-      }
-      .padding()
-    }
+    Text("\(astronauts.count)")
   }
 }
+
 
 
 #Preview {
